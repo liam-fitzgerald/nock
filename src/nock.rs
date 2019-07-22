@@ -1,6 +1,3 @@
-// type Atom = u32;
-// type Cell = Vec<Noun>;
-
 #[derive(Debug)]
 enum Noun {
   Atom(u32),
@@ -27,15 +24,32 @@ pub fn main(input: String) {
 }
 
 fn parse(input: String) -> Noun {
-  let noun = Noun::new();
+  // let noun = Noun::new();
 
-  let mut n = 0;
+  // let len: usize = input.len();
+  // let mut i: usize = 0;
   let mut atom: u32 = 0;
-  let mut current_cell = &noun;
+  // let mut current_cell = &noun;
 
-  for c in input.chars() {
-    &noun.push(Noun::Atom(32));
+  let mut iter = input.chars();
+
+  fn parse_recursive(mut iter: &mut std::str::Chars<'_>) -> Noun {
+    let cell = Noun::new();
+    let char = iter.next();
+    match char {
+      None => return cell,
+      Some(c) => println!("{}", c),
+    };
+    cell
   }
+
+  // if iter.next() == Some('[') {
+  //   let noun = parse_recursive(iter);
+  // };
+  let noun = parse_recursive(&mut iter);
+
+  let c = iter.next();
+  println!("{:?}", c);
 
   return noun;
 }
