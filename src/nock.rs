@@ -1,55 +1,61 @@
 #[derive(Debug)]
 enum Noun {
-  Atom(u32),
+  Atom(u64),
   Cell(Vec<Noun>),
-}
-
-impl Noun {
-  fn new() -> Noun {
-    Noun::Cell(vec![])
-  }
-
-  fn push(&self, noun: Noun) {
-    match noun {
-      Noun::Atom(int) => println!("This is an atom"),
-      Noun::Cell(vec) => println!("This is a cell. {:?}", self),
-    }
-  }
 }
 
 pub fn main(input: String) {
   println!("{}", input);
-  println!("{:?}", vec![1, 2, 3]);
-  parse(input);
+  let parsed = parse(input);
+  println!("{:?}", parsed);
 }
 
 fn parse(input: String) -> Noun {
-  // let noun = Noun::new();
-
-  // let len: usize = input.len();
-  // let mut i: usize = 0;
-  let mut atom: u32 = 0;
-  // let mut current_cell = &noun;
-
   let mut iter = input.chars();
 
   fn parse_recursive(mut iter: &mut std::str::Chars<'_>) -> Noun {
-    let cell = Noun::new();
-    let char = iter.next();
-    match char {
-      None => return cell,
-      Some(c) => println!("{}", c),
-    };
-    cell
+    let mut cell = Vec::new();
+    let mut atom: Option<u64> = None;
+
+    while let Some(c) = iter.next() {
+      match c {
+        '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => match atom {
+          Some(num) => atom = Some(num * 10 + c as u64),
+          None => atom = Some(c as u64),
+        },
+        '[' => match atom {
+          Some(num) => {
+            cell.push(Noun::Atom(num));
+            cell.push(parse_recursive(&mut iter));
+            atom = None;
+          }
+          None => {
+            cell.push(parse_recursive(&mut iter));
+          }
+        },
+        ']' => match atom {
+          Some(num) => {
+            cell.push(Noun::Atom(num));
+            break;
+          }
+          None => {
+            break;
+          }
+        },
+        ' ' => match atom {
+          Some(num) => {
+            cell.push(Noun::Atom(num));
+            atom = None;
+          }
+          None => cell.push(parse_recursive(&mut iter)),
+        },
+        _ => panic! {"Illegal character: {}", c},
+      };
+    }
+    Noun::Cell(cell)
   }
 
-  // if iter.next() == Some('[') {
-  //   let noun = parse_recursive(iter);
-  // };
   let noun = parse_recursive(&mut iter);
-
-  let c = iter.next();
-  println!("{:?}", c);
 
   return noun;
 }
