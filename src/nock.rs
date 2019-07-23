@@ -1,6 +1,6 @@
 #[derive(Debug)]
 enum Noun {
-  Atom(u64),
+  Atom(u32),
   Cell(Vec<Noun>),
 }
 
@@ -15,13 +15,13 @@ fn parse(input: String) -> Noun {
 
   fn parse_recursive(mut iter: &mut std::str::Chars<'_>) -> Noun {
     let mut cell = Vec::new();
-    let mut atom: Option<u64> = None;
+    let mut atom: Option<u32> = None;
 
     while let Some(c) = iter.next() {
       match c {
         '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => match atom {
-          Some(num) => atom = Some(num * 10 + c as u64),
-          None => atom = Some(c as u64),
+          Some(num) => atom = Some(num * 10 + c.to_digit(10).unwrap()),
+          None => atom = Some(c.to_digit(10).unwrap()),
         },
         '[' => match atom {
           Some(num) => {
@@ -55,9 +55,7 @@ fn parse(input: String) -> Noun {
     Noun::Cell(cell)
   }
 
-  let noun = parse_recursive(&mut iter);
-
-  return noun;
+  parse_recursive(&mut iter)
 }
 
 fn nock(noun: Noun) {
