@@ -1,7 +1,34 @@
+use std::fmt;
+
 #[derive(Debug)]
 enum Noun {
   Atom(u32),
   Cell(Vec<Noun>),
+}
+
+impl fmt::Display for Noun {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn traverse(cell: &Noun) -> String {
+      let mut string = &mut String::from("[");
+      match &cell {
+        Noun::Atom(n) => panic! {"Traverse works by cell"},
+        Noun::Cell(v) => {
+          for noun in v.iter() {
+            match noun {
+              Noun::Atom(n) => string.push_str(&n.to_string()),
+              Noun::Cell(v) => {
+                string.push_str(&traverse(&noun));
+                string.push_str("]")
+              }
+            };
+          }
+        }
+      };
+      string.to_string()
+    };
+
+    write!(f, "{}", traverse(&self))
+  }
 }
 
 pub fn main(input: String) {
