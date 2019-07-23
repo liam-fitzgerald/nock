@@ -9,16 +9,16 @@ enum Noun {
 impl fmt::Display for Noun {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     fn traverse(cell: &Noun) -> String {
-      let mut string = &mut String::from("[");
+      let mut string = &mut String::from("[ ");
       match &cell {
         Noun::Atom(n) => panic! {"Traverse works by cell"},
         Noun::Cell(v) => {
           for noun in v.iter() {
             match noun {
-              Noun::Atom(n) => string.push_str(&n.to_string()),
+              Noun::Atom(n) => string.push_str(&(n.to_string() + " ")),
               Noun::Cell(v) => {
                 string.push_str(&traverse(&noun));
-                string.push_str("]")
+                string.push_str("] ")
               }
             };
           }
@@ -35,10 +35,14 @@ pub fn main(input: String) {
   println!("{}", input);
   let parsed = parse(input);
   println!("{:?}", parsed);
+  println!("{}", parsed);
 }
 
 fn parse(input: String) -> Noun {
   let mut iter = input.chars();
+  if iter.next().unwrap() != '[' {
+    panic! {"Nock syntax must begin with an open bracket."}
+  };
 
   fn parse_recursive(mut iter: &mut std::str::Chars<'_>) -> Noun {
     let mut cell = Vec::new();
@@ -74,7 +78,7 @@ fn parse(input: String) -> Noun {
             cell.push(Noun::Atom(num));
             atom = None;
           }
-          None => cell.push(parse_recursive(&mut iter)),
+          None => (),
         },
         _ => panic! {"Illegal character: {}", c},
       };
