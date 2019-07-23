@@ -27,7 +27,7 @@ impl fmt::Display for Noun {
       string.to_string()
     };
 
-    write!(f, "{}", traverse(&self))
+    write!(f, "{}", traverse(&self) + "]")
   }
 }
 
