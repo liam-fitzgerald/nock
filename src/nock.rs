@@ -1,4 +1,5 @@
 use std::fmt;
+use Noun::*;
 
 #[derive(Debug)]
 enum Noun {
@@ -6,17 +7,26 @@ enum Noun {
   Cell(Vec<Noun>),
 }
 
+impl Noun {
+  fn unwrap_cell(&self) -> Option<&Vec<Noun>> {
+    match *self {
+      Atom(_) => None,
+      Cell(ref vec) => Some(vec),
+    }
+  }
+}
+
 impl fmt::Display for Noun {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     fn traverse(cell: &Noun) -> String {
-      let mut string = &mut String::from("[ ");
+      let string = &mut String::from("[ ");
       match &cell {
-        Noun::Atom(n) => panic! {"Traverse works by cell"},
-        Noun::Cell(v) => {
+        Atom(_) => panic! {"Traverse works by cell"},
+        Cell(v) => {
           for noun in v.iter() {
             match noun {
-              Noun::Atom(n) => string.push_str(&(n.to_string() + " ")),
-              Noun::Cell(v) => {
+              Atom(n) => string.push_str(&(n.to_string() + " ")),
+              Cell(_) => {
                 string.push_str(&traverse(&noun));
                 string.push_str("] ")
               }
@@ -32,13 +42,14 @@ impl fmt::Display for Noun {
 }
 
 pub fn main(input: String) {
-  println!("{}", input);
-  let parsed = parse(input);
-  println!("{:?}", parsed);
+  // println!("{}", input);
+  let mut parsed = parse_from_string(input);
+  // println!("{:?}", parsed);
+  parsed = enforce_pairs(&parsed);
   println!("{}", parsed);
 }
 
-fn parse(input: String) -> Noun {
+fn parse_from_string(input: String) -> Noun {
   let mut iter = input.chars();
   if iter.next().unwrap() != '[' {
     panic! {"Nock syntax must begin with an open bracket."}
@@ -56,7 +67,7 @@ fn parse(input: String) -> Noun {
         },
         '[' => match atom {
           Some(num) => {
-            cell.push(Noun::Atom(num));
+            cell.push(Atom(num));
             cell.push(parse_recursive(&mut iter));
             atom = None;
           }
@@ -66,7 +77,7 @@ fn parse(input: String) -> Noun {
         },
         ']' => match atom {
           Some(num) => {
-            cell.push(Noun::Atom(num));
+            cell.push(Atom(num));
             break;
           }
           None => {
@@ -75,7 +86,7 @@ fn parse(input: String) -> Noun {
         },
         ' ' => match atom {
           Some(num) => {
-            cell.push(Noun::Atom(num));
+            cell.push(Atom(num));
             atom = None;
           }
           None => (),
@@ -83,13 +94,49 @@ fn parse(input: String) -> Noun {
         _ => panic! {"Illegal character: {}", c},
       };
     }
-    Noun::Cell(cell)
+    Cell(cell)
   }
 
   parse_recursive(&mut iter)
 }
 
-fn nock(noun: Noun) {
-  println!("{:?}", noun)
+fn enforce_pairs(noun: &Noun) -> Noun {
+  let vector = noun.unwrap_cell().unwrap();
+  let len = vector.len();
+  let mut new_vec: Vec<Noun> = vec![];
+  match len {
+    0 | 1 => panic! {"Cells must have length of exactly 2"},
+    2 => {
+      new_vec.push(match &vector[0] {
+        Atom(n) => Atom(*n),
+        Cell(_) => enforce_pairs(&vector[0]),
+      });
+      new_vec.push(match &vector[1] {
+        Atom(n) => Atom(*n),
+        Cell(_) => enforce_pairs(&vector[1]),
+      });
+    }
+    _ => {
+      new_vec.push(match &vector[0] {
+        Atom(n) => Atom(*n),
+        Cell(_) => enforce_pairs(&vector[0]),
+      });
+      let mut rest_of_vec: Vec<Noun> = vec![];
+      let mut iter = vector.iter();
+      iter.next();
+      while let Some(elem) = iter.next() {
+        rest_of_vec.push(match elem {
+          Atom(n) => Atom(*n),
+          Cell(_) => panic! {"Incorrectly formatted nock"},
+        });
+      }
+      new_vec.push(enforce_pairs(&Cell(rest_of_vec)));
+    }
+  };
+  Cell(new_vec)
 }
+
+// fn nock(noun: Noun) {
+//   println!("{:?}", noun)
+// }
 
