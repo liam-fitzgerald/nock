@@ -19,16 +19,16 @@ impl Noun {
 impl fmt::Display for Noun {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     fn traverse(cell: &Noun) -> String {
-      let string = &mut String::from("[ ");
+      let string = &mut String::from("[");
       match &cell {
         Atom(_) => panic! {"Traverse works by cell"},
         Cell(v) => {
           for noun in v.iter() {
             match noun {
-              Atom(n) => string.push_str(&(n.to_string() + " ")),
+              Atom(n) => string.push_str(&(" ".to_string() + &n.to_string() + " ")),
               Cell(_) => {
                 string.push_str(&traverse(&noun));
-                string.push_str("] ")
+                string.push_str("]")
               }
             };
           }
@@ -37,7 +37,9 @@ impl fmt::Display for Noun {
       string.to_string()
     };
 
-    write!(f, "{}", traverse(&self) + "]")
+    let result = traverse(&self) + "]";
+
+    write!(f, "{}", result)
   }
 }
 
