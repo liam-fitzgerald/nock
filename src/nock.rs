@@ -14,6 +14,13 @@ impl Noun {
       Cell(ref vec) => Some(vec),
     }
   }
+
+  fn unwrap_atom(&self) -> Option<&u32> {
+    match *self {
+      Atom(ref n) => Some(n),
+      Cell(_) => None,
+    }
+  }
 }
 
 impl fmt::Display for Noun {
@@ -138,7 +145,110 @@ fn enforce_pairs(noun: &Noun) -> Noun {
   Cell(new_vec)
 }
 
-// fn nock(noun: Noun) {
+// fn nock(noun: Noun) -> Noun {
 //   println!("{:?}", noun)
 // }
 
+// ?
+fn wut(noun: Noun) -> Noun {
+  match noun {
+    Atom(_) => Atom(1),
+    Cell(_) => Atom(0),
+  }
+}
+
+// +
+fn lus(noun: Noun) -> Noun {
+  match noun {
+    Atom(n) => Atom(n + 1),
+    Cell(v) => Cell(v),
+  }
+}
+
+// =
+fn tis(noun: Noun) -> Noun {
+  match noun {
+    Atom(_) => panic! {"tis atom"},
+    Cell(v) => {
+      // Check for deep equality of v[0] and v[1]
+      if deeply_equal(&v[0], &v[1]) {
+        return Atom(0);
+      } else {
+        return Atom(1);
+      }
+    }
+  }
+}
+
+// /
+// fn fas(address: Noun, noun: Noun) -> Noun {
+//   match address {
+//     Cell(_) => panic! {"fas address invalid"},
+//     Atom(n) => match n {
+//       0 => panic! {"fas address invalid"},
+//       1 => noun,
+//       2 => match noun {
+//         Atom(_) => panic! {"fas noun invalid"},
+//         Cell(v) => v[0],
+//       },
+//       3 => match noun {
+//         Atom(_) => panic! {"fas noun invalid"},
+//         Cell(v) => v[1],
+//       },
+//       _ => match noun {
+//         Atom(_) => panic! {"fas noun invalid"},
+//         Cell(v) => fas(Atom(2 + (n % 2)), fas((n / 2)))
+//       },
+//     }
+//   }
+// }
+
+fn fas(noun: &Noun) -> &Noun {
+  match noun {
+    Atom(_) => panic! {"fas invalid"},
+    Cell(ref v) => {
+      let mut address = *v[0].unwrap_atom().unwrap();
+      let mut path: Vec<u8> = vec![];
+      while address > 1 {
+        if address % 2 == 0 {
+          address = address / 2;
+          path.push(0);
+        } else {
+          address = (address - 1) / 2;
+          path.push(1);
+        }
+      }
+      let mut current_cell = &v[1];
+      for i in path.iter().rev() {
+        if *i == 0 {
+          current_cell = &current_cell.unwrap_cell().unwrap()[0];
+        } else {
+          current_cell = &current_cell.unwrap_cell().unwrap()[1];
+        };
+      }
+      return current_cell;
+    }
+  }
+}
+
+
+fn deeply_equal(a: &Noun, b: &Noun) -> bool {
+  match a {
+    Atom(num_a) => match b {
+      Atom(num_b) => return num_a == num_b,
+      Cell(_) => return false,
+    },
+    Cell(vec_a) => match b {
+      Atom(_) => return false,
+      Cell(vec_b) => {
+        if !deeply_equal(&vec_a[0], &vec_b[0]) {
+          return false;
+        };
+        if !deeply_equal(&vec_a[1], &vec_b[1]) {
+          return false;
+        };
+        return true;
+      }
+    },
+  }
+}
