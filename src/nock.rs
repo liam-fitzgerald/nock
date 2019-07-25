@@ -181,56 +181,41 @@ fn tis(noun: Noun) -> Noun {
 }
 
 // /
-// fn fas(address: Noun, noun: Noun) -> Noun {
-//   match address {
-//     Cell(_) => panic! {"fas address invalid"},
-//     Atom(n) => match n {
-//       0 => panic! {"fas address invalid"},
-//       1 => noun,
-//       2 => match noun {
-//         Atom(_) => panic! {"fas noun invalid"},
-//         Cell(v) => v[0],
-//       },
-//       3 => match noun {
-//         Atom(_) => panic! {"fas noun invalid"},
-//         Cell(v) => v[1],
-//       },
-//       _ => match noun {
-//         Atom(_) => panic! {"fas noun invalid"},
-//         Cell(v) => fas(Atom(2 + (n % 2)), fas((n / 2)))
-//       },
-//     }
-//   }
-// }
-
-fn fas(noun: &Noun) -> &Noun {
-  match noun {
-    Atom(_) => panic! {"fas invalid"},
-    Cell(ref v) => {
-      let mut address = *v[0].unwrap_atom().unwrap();
-      let mut path: Vec<u8> = vec![];
-      while address > 1 {
-        if address % 2 == 0 {
-          address = address / 2;
-          path.push(0);
-        } else {
-          address = (address - 1) / 2;
-          path.push(1);
-        }
-      }
-      let mut current_cell = &v[1];
-      for i in path.iter().rev() {
-        if *i == 0 {
-          current_cell = &current_cell.unwrap_cell().unwrap()[0];
-        } else {
-          current_cell = &current_cell.unwrap_cell().unwrap()[1];
-        };
-      }
-      return current_cell;
+fn fas(mut address: u32, noun: &Noun) -> &Noun {
+  let mut path: Vec<u8> = vec![];
+  while address > 1 {
+    if address % 2 == 0 {
+      address = address / 2;
+      path.push(0);
+    } else {
+      address = (address - 1) / 2;
+      path.push(1);
     }
   }
+  let mut current_cell = noun;
+  for i in path.iter().rev() {
+    if *i == 0 {
+      current_cell = &current_cell.unwrap_cell().unwrap()[0];
+    } else {
+      current_cell = &current_cell.unwrap_cell().unwrap()[1];
+    };
+  }
+  return current_cell;
 }
 
+// *
+// fn tar(noun: &Noun) {
+//   let formula = &noun.unwrap_cell().unwrap()[1];
+//   let operation = &formula.unwrap_cell().unwrap()[0];
+//   match operation {
+//     Atom(a) => match a {
+//       0 => fas
+//     },
+//     Cell(v) => {
+
+//     },
+//   }
+// }
 
 fn deeply_equal(a: &Noun, b: &Noun) -> bool {
   match a {
