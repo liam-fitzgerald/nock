@@ -1,7 +1,7 @@
 use std::fmt;
 use Noun::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum Noun {
   Atom(u32),
   Cell(Vec<Noun>),
@@ -145,9 +145,9 @@ fn enforce_pairs(noun: &Noun) -> Noun {
   Cell(new_vec)
 }
 
-// fn nock(noun: Noun) -> Noun {
-//   println!("{:?}", noun)
-// }
+fn nock(noun: &Noun) -> Noun {
+  tar(noun)
+}
 
 // ?
 fn wut(noun: Noun) -> Noun {
@@ -181,7 +181,8 @@ fn tis(noun: Noun) -> Noun {
 }
 
 // /
-fn fas(mut address: u32, noun: &Noun) -> &Noun {
+fn fas(addr: Noun, noun: &Noun) -> Noun {
+  let mut address = *addr.unwrap_atom().unwrap();
   let mut path: Vec<u8> = vec![];
   while address > 1 {
     if address % 2 == 0 {
@@ -200,22 +201,132 @@ fn fas(mut address: u32, noun: &Noun) -> &Noun {
       current_cell = &current_cell.unwrap_cell().unwrap()[1];
     };
   }
-  return current_cell;
+  return current_cell.clone();
 }
 
-// *
-// fn tar(noun: &Noun) {
-//   let formula = &noun.unwrap_cell().unwrap()[1];
-//   let operation = &formula.unwrap_cell().unwrap()[0];
-//   match operation {
-//     Atom(a) => match a {
-//       0 => fas
-//     },
-//     Cell(v) => {
+// #
+// fn hax()
 
-//     },
-//   }
-// }
+// *
+fn tar(noun: &Noun) -> Noun {
+  let unwrapped_noun = &noun.unwrap_cell().unwrap();
+  let subject = &unwrapped_noun[0];
+  let formula = &unwrapped_noun[1];
+  let formula_v = formula.unwrap_cell().unwrap();
+  let operation = &formula_v[0];
+  match operation {
+    Atom(a) => match a {
+      0 => fas(formula_v[1].clone(), &subject),
+      1 => formula_v[1].clone(),
+      2 => nock(&Cell(vec![
+        nock(&Cell(vec![
+          subject.clone(),
+          formula_v[1].unwrap_cell().unwrap()[0].clone(),
+        ])),
+        nock(&Cell(vec![
+          subject.clone(),
+          formula_v[1].unwrap_cell().unwrap()[1].clone(),
+        ])),
+      ])),
+      3 => wut(nock(&Cell(vec![subject.clone(), formula_v[1].clone()]))),
+      4 => lus(nock(&Cell(vec![subject.clone(), formula_v[1].clone()]))),
+      5 => tis(Cell(vec![
+        nock(&Cell(vec![
+          subject.clone(),
+          formula_v[1].unwrap_cell().unwrap()[0].clone(),
+        ])),
+        nock(&Cell(vec![
+          subject.clone(),
+          formula_v[1].unwrap_cell().unwrap()[1].clone(),
+        ])),
+      ])),
+      6 => nock(&Cell(vec![
+        subject.clone(),
+        Cell(vec![
+          Atom(2),
+          Cell(vec![Atom(0), Atom(1)]),
+          Cell(vec![
+            Atom(2),
+            Cell(vec![Cell(vec![
+              Atom(1),
+              formula_v[1].unwrap_cell().unwrap()[1]
+                .unwrap_cell()
+                .unwrap()[0]
+                .clone(),
+              formula_v[1].unwrap_cell().unwrap()[1]
+                .unwrap_cell()
+                .unwrap()[1]
+                .clone(),
+            ])]),
+            Cell(vec![
+              Cell(vec![Atom(0), Atom(1)]),
+              Cell(vec![
+                Cell(vec![Atom(1), Cell(vec![Atom(2), Atom(3)])]),
+                Cell(vec![
+                  Cell(vec![Atom(1), Atom(0)]),
+                  Atom(4),
+                  Cell(vec![
+                    Atom(4),
+                    formula_v[1].unwrap_cell().unwrap()[0].clone(),
+                  ]),
+                ]),
+              ]),
+            ]),
+          ]),
+        ]),
+      ]))
+      .clone(),
+      7 => nock(&Cell(vec![
+        subject.clone(),
+        Cell(vec![
+          Atom(2),
+          Cell(vec![
+            formula_v[1].unwrap_cell().unwrap()[0].clone(),
+            Cell(vec![
+              Atom(1),
+              subject.clone(),
+              formula_v[1].unwrap_cell().unwrap()[1].clone(),
+            ]),
+          ]),
+        ]),
+      ]))
+      .clone(),
+      8 => nock(&Cell(vec![
+        Cell(vec![
+          nock(&Cell(vec![
+            subject.clone(),
+            formula_v[1].unwrap_cell().unwrap()[0].clone(),
+          ])),
+          subject.clone(),
+        ]),
+        formula_v[1].unwrap_cell().unwrap()[1].clone(),
+      ]))
+      .clone(),
+      9 => nock(&Cell(vec![
+        nock(&Cell(vec![
+          subject.clone(),
+          formula_v[1].unwrap_cell().unwrap()[1].clone(),
+        ])),
+        Cell(vec![
+          Atom(2),
+          Cell(vec![
+            Cell(vec![Atom(0), Atom(1)]),
+            Atom(0),
+            formula_v[1].unwrap_cell().unwrap()[0].clone(),
+          ]),
+        ]),
+      ]))
+      .clone(),
+      // 11 => {
+
+      // }
+      _ => panic! {"invalid operation"},
+    },
+    Cell(v) => panic! {
+      "The operation must be an atom"
+    },
+  }
+}
 
 fn deeply_equal(a: &Noun, b: &Noun) -> bool {
   match a {
