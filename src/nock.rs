@@ -326,9 +326,10 @@ fn tar(noun: &Noun) -> Noun {
       // }
       _ => panic! {"invalid operation"},
     },
-    Cell(v) => panic! {
-      "The operation must be an atom"
-    },
+    Cell(v) => Cell(vec![
+      nock(&Cell(vec![subject.clone(), formula_v[0].clone()])),
+      nock(&Cell(vec![subject.clone(), formula_v[1].clone()])),
+    ]),
   }
 }
 
