@@ -8,8 +8,15 @@ mod tests {
     assert!(1 == 1)
   }
 
+
   #[test]
   fn op_0() {
+    let input = "[57 [0 1]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "57");
+    let input = "[[132 19] [0 3]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "19");
     let input = "[[[4 5] [6 14 15]] [0 7]]";
     let product = parse_and_nock(input.to_string());
     assert_eq!(format!("{}", product), "[ 14  15 ]");
@@ -53,12 +60,14 @@ mod tests {
     let input = "[42 [4 0 1]]";
     let product = parse_and_nock(input.to_string());
     assert_eq!(format!("{}", product), "43");
+    let input = "[57 [4 0 1]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "58");
+    let input = "[[132 19] [4 0 3]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "20");
   }
 
-  // let input = "[57 [0 1]]"; // 57
-  // let input = "[[132 19] [0 3]]"; // 19
-  // let input = "[57 [4 0 1]]"; // 58
-  // let input = "[[132 19] [4 0 3]]"; // 20
 
   // let input2 = "[[[12 13] 14] 15]";
   // let input3 = "[[12 13] [62 38 97]]";
