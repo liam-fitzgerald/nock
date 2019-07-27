@@ -2,7 +2,7 @@ use std::fmt;
 use Noun::*;
 
 #[derive(Debug, Clone)]
-enum Noun {
+pub enum Noun {
   Atom(u32),
   Cell(Vec<Noun>),
 }
@@ -53,7 +53,7 @@ impl fmt::Display for Noun {
 
 pub fn main(input: String) {
   // println!("{}", input);
-  let mut parsed = parse_from_string(input);
+  let mut parsed = parse(input);
   // println!("{:?}", parsed);
   parsed = enforce_pairs(&parsed);
   println!("{}", parsed);
@@ -62,7 +62,13 @@ pub fn main(input: String) {
   println!("{}", product);
 }
 
-fn parse_from_string(input: String) -> Noun {
+pub fn parse_and_nock(input: String) -> Noun {
+  let mut parsed = parse(input);
+  parsed = enforce_pairs(&parsed);
+  nock(&parsed)
+}
+
+pub fn parse(input: String) -> Noun {
   let mut iter = input.chars();
   if iter.next().unwrap() != '[' {
     panic! {"Nock syntax must begin with an open bracket."}
@@ -149,7 +155,7 @@ fn enforce_pairs(noun: &Noun) -> Noun {
   Cell(new_vec)
 }
 
-fn nock(noun: &Noun) -> Noun {
+pub fn nock(noun: &Noun) -> Noun {
   tar(noun)
 }
 
