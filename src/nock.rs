@@ -301,14 +301,36 @@ fn tar(noun: &Noun) -> Noun {
           Atom(2),
           Cell(vec![
             Cell(vec![Atom(0), Atom(1)]),
-            Atom(0),
-            formula_v[1].unwrap_cell().unwrap()[0].clone(),
+            Cell(vec![
+              Atom(0),
+              formula_v[1].unwrap_cell().unwrap()[0].clone(),
+            ]),
           ]),
         ]),
       ])),
-      // 11 => {
-
-      // }
+      // TODO: 10
+      11 => match formula_v[1].unwrap_cell().unwrap()[0] {
+        Atom(_) => tar(&Cell(vec![
+          subject.clone(),
+          formula_v[1].unwrap_cell().unwrap()[1].clone(),
+        ])),
+        Cell(_) => tar(&Cell(vec![
+          Cell(vec![
+            tar(&Cell(vec![
+              subject.clone(),
+              formula_v[1].unwrap_cell().unwrap()[0]
+                .unwrap_cell()
+                .unwrap()[1]
+                .clone(),
+            ])),
+            tar(&Cell(vec![
+              subject.clone(),
+              formula_v[1].unwrap_cell().unwrap()[1].clone(),
+            ])),
+          ]),
+          Cell(vec![Atom(0), Atom(3)]),
+        ])),
+      },
       _ => panic! {"invalid operation"},
     },
     Cell(v) => Cell(vec![
