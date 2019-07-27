@@ -36,7 +36,6 @@ impl fmt::Display for Noun {
               Atom(n) => string.push_str(&(" ".to_string() + &n.to_string() + " ")),
               Cell(_) => {
                 string.push_str(&traverse(&noun));
-                string.push_str("]")
               }
             };
           }
@@ -58,6 +57,7 @@ pub fn main(input: String) {
   // println!("{:?}", parsed);
   parsed = enforce_pairs(&parsed);
   println!("{}", parsed);
+  println!("{:?}", parsed);
   let product = nock(&parsed);
   println!("{}", product);
 }
