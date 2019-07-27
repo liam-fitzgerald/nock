@@ -28,8 +28,13 @@ mod tests {
     assert_eq!(format!("{}", product), "153");
   }
 
+  #[test]
+  fn op_2() {
+    let input1 = "[77 [2 [1 42] [1 1 153 218]]]";
+    let product = parse_and_nock(input1.to_string());
+    assert_eq!(format!("{}", product), "[ 153  218 ]");
+  }
 
-  // let input1 = "[42 [1 153 218]]"; // 1   [153 218]
   // let input1 = "[77 [2 [1 42] [1 1 153 218]]]"; // 2   [153 218]
 
   // let input1 = "[57 [0 1]]"; // 57
