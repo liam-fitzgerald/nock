@@ -57,7 +57,7 @@ pub fn main(input: String) {
   // println!("{:?}", parsed);
   parsed = enforce_pairs(&parsed);
   println!("{}", parsed);
-  println!("{:?}", parsed);
+  // println!("{:?}", parsed);
   let product = nock(&parsed);
   println!("{}", product);
 }
@@ -140,7 +140,7 @@ fn enforce_pairs(noun: &Noun) -> Noun {
       while let Some(elem) = iter.next() {
         rest_of_vec.push(match elem {
           Atom(n) => Atom(*n),
-          Cell(_) => panic! {"Incorrectly formatted nock"},
+          Cell(_) => enforce_pairs(elem),
         });
       }
       new_vec.push(enforce_pairs(&Cell(rest_of_vec)));
