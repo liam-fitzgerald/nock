@@ -252,40 +252,29 @@ fn tar(noun: &Noun) -> Noun {
       ])),
       6 => tar(&Cell(vec![
         subject.clone(),
-        Cell(vec![
-          Atom(2),
-          Cell(vec![Atom(0), Atom(1)]),
+        tar(&Cell(vec![
+          formula_v[1].unwrap_cell().unwrap()[1].clone(),
           Cell(vec![
-            Atom(2),
-            Cell(vec![Cell(vec![
-              Atom(1),
-              formula_v[1].unwrap_cell().unwrap()[1]
-                .unwrap_cell()
-                .unwrap()[0]
-                .clone(),
-              formula_v[1].unwrap_cell().unwrap()[1]
-                .unwrap_cell()
-                .unwrap()[1]
-                .clone(),
-            ])]),
-            Cell(vec![
-              Cell(vec![Atom(0), Atom(1)]),
+            Atom(0),
+            tar(&Cell(vec![
+              Cell(vec![Atom(2), Atom(3)]),
               Cell(vec![
-                Cell(vec![Atom(1), Cell(vec![Atom(2), Atom(3)])]),
-                Cell(vec![
-                  Cell(vec![Atom(1), Atom(0)]),
-                  Atom(4),
+                Atom(0),
+                tar(&Cell(vec![
+                  subject.clone(),
                   Cell(vec![
                     Atom(4),
-                    formula_v[1].unwrap_cell().unwrap()[0].clone(),
+                    Cell(vec![
+                      Atom(4),
+                      formula_v[1].unwrap_cell().unwrap()[0].clone(),
+                    ]),
                   ]),
-                ]),
+                ])),
               ]),
-            ]),
+            ])),
           ]),
-        ]),
-      ]))
-      .clone(),
+        ])),
+      ])),
       7 => tar(&Cell(vec![
         subject.clone(),
         Cell(vec![
@@ -299,8 +288,7 @@ fn tar(noun: &Noun) -> Noun {
             ]),
           ]),
         ]),
-      ]))
-      .clone(),
+      ])),
       8 => tar(&Cell(vec![
         Cell(vec![
           tar(&Cell(vec![
@@ -310,8 +298,7 @@ fn tar(noun: &Noun) -> Noun {
           subject.clone(),
         ]),
         formula_v[1].unwrap_cell().unwrap()[1].clone(),
-      ]))
-      .clone(),
+      ])),
       9 => tar(&Cell(vec![
         tar(&Cell(vec![
           subject.clone(),
@@ -325,8 +312,7 @@ fn tar(noun: &Noun) -> Noun {
             formula_v[1].unwrap_cell().unwrap()[0].clone(),
           ]),
         ]),
-      ]))
-      .clone(),
+      ])),
       // 11 => {
 
       // }
