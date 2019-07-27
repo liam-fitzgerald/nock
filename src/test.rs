@@ -45,14 +45,20 @@ mod tests {
     assert_eq!(format!("{}", product), "[ 43  1 ]");
   }
 
+  #[test]
+  fn op_4() {
+    let input = "[42 4 0 1]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "43");
+    let input = "[42 [4 0 1]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "43");
+  }
+
   // let input = "[57 [0 1]]"; // 57
   // let input = "[[132 19] [0 3]]"; // 19
   // let input = "[57 [4 0 1]]"; // 58
   // let input = "[[132 19] [4 0 3]]"; // 20
-
-  // let input = "[42 [3 0 1]]"; // 1
-  // let input = "[42 [4 0 1]]"; // 43
-  // let input = "[42 [[4 0 1] [3 0 1]]]"; // [43, 1]
 
   // let input2 = "[[[12 13] 14] 15]";
   // let input3 = "[[12 13] [62 38 97]]";
