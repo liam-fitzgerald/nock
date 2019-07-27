@@ -97,4 +97,17 @@ mod tests {
     assert_eq!(format!("{}", product), "43");
   }
 
+  // TODO: 9
+  // TODO: 10
+
+  #[test]
+  fn op_11() {
+    let input = "[[132 19] [11 37 [4 0 3]]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "20");
+    let input = "[[132 19] [11 [1 1 1] [4 0 3]]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "20");
+  }
+
 }
