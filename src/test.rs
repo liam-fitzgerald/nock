@@ -68,7 +68,16 @@ mod tests {
     assert_eq!(format!("{}", product), "20");
   }
 
+  // TODO: 5
 
-  // let input2 = "[[[12 13] 14] 15]";
-  // let input3 = "[[12 13] [62 38 97]]";
+  #[test]
+  fn op_6() {
+    let input = "[42 [6 [1 0] [4 0 1] [1 233]]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "43");
+    let input = "[42 [6 [1 1] [4 0 1] [1 233]]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "233");
+  }
+
 }
