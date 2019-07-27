@@ -80,4 +80,11 @@ mod tests {
     assert_eq!(format!("{}", product), "233");
   }
 
+  #[test]
+  fn op_7() {
+    let input = "[42 [7 [4 0 1] [4 0 1]]]";
+    let product = parse_and_nock(input.to_string());
+    assert_eq!(format!("{}", product), "44");
+  }
+
 }
